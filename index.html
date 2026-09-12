@@ -31,7 +31,7 @@
           }
         }
       }
-    }
+    };
   </script>
 </head>
 <body class="bg-timber-50 text-stone-800 font-sans antialiased">
@@ -171,7 +171,7 @@
     </div>
   </section>
 
-  <!-- Simplified Multi-Result Popup Modal -->
+  <!-- Multi-Result Popup Modal -->
   <div id="modalBackdrop" class="fixed inset-0 bg-stone-950/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-stone-200 relative overflow-y-auto max-h-[90vh]">
       
@@ -209,7 +209,7 @@
 
   <!-- JavaScript Logic -->
   <script>
-    // 1. Simplified Motif Database (Title, Meaning, and Source)
+    // 1. Comprehensive Motif & Pola Database
     const MOTIF_DATA = {
       "motif_ati_ati": {
         title: "Motif Ati-Ati (Daun Ati-Ati)",
@@ -221,296 +221,366 @@
         meaning: "Symbolizes modest beauty, purity of intent, and spiritual contemplation—blooming gracefully even in quiet isolation.",
         source: "Kajian Simbolisme Pada Elemen Estetik Dan Ragam Hias Seni Bina Tradisional Melayu, Dr Sabriza"
       },
+      "bunga_bakawali": {
+        title: "Bunga Bakawali",
+        meaning: "Symbolizes modest beauty, purity of intent, and spiritual contemplation—blooming gracefully even in quiet isolation.",
+        source: "Kajian Simbolisme Pada Elemen Estetik Dan Ragam Hias Seni Bina Tradisional Melayu, Dr Sabriza"
+      },
       "motif_balung_ayam": {
         title: "Motif Balung Ayam (Cock's Comb)",
-        meaning: "Derived from the rooster's crest; symbolizes courage, leadership, vigilance, and dignified community authority."
+        meaning: "Derived from the rooster's crest; symbolizes courage, leadership, vigilance, and dignified community authority.",
+        source: "Dr Sabriza"
       },
       "motif_bayam_peraksi": {
         title: "Motif Bayam Peraksi",
-        meaning: "Gracefully curling leafy motif representing vitality, humble growth, nourishment, and natural harmony."
+        meaning: "Gracefully curling leafy motif representing vitality, humble growth, nourishment, and natural harmony.",
+        source: "Dr Sabriza"
       },
       "motif_beremi": {
         title: "Motif Beremi (Bacopa Monnieri)",
-        meaning: "Inspired by medicinal wetland foliage; symbolizes mental serenity, resilience, healing, and traditional wisdom."
+        meaning: "Inspired by medicinal wetland foliage; symbolizes mental serenity, resilience, healing, and traditional wisdom.",
+        source: "Dr Sabriza"
       },
       "motif_butun": {
         title: "Motif Butun (Buah Buton)",
-        meaning: "Pendant flower bud or finial motif; symbolizes nobility, traditional leadership, honor, and spiritual protection."
+        meaning: "Pendant flower bud or finial motif; symbolizes nobility, traditional leadership, honor, and spiritual protection.",
+        source: "Dr Sabriza"
       },
       "motif_buah_buton": {
         title: "Motif Buah Buton",
-        meaning: "Pendant flower bud or finial motif; symbolizes nobility, traditional leadership, honor, and spiritual protection."
+        meaning: "Pendant flower bud or finial motif; symbolizes nobility, traditional leadership, honor, and spiritual protection.",
+        source: "Dr Sabriza"
       },
       "motif_cempaka": {
         title: "Motif Bunga Cempaka",
-        meaning: "Sweet-scented blossom symbolizing refinement of character, good reputation, nobility, and warmth in welcoming guests."
+        meaning: "Sweet-scented blossom symbolizing refinement of character, good reputation, nobility, and warmth in welcoming guests.",
+        source: "Dr Sabriza"
       },
       "motif_bunga_cempaka": {
         title: "Motif Bunga Cempaka",
-        meaning: "Sweet-scented blossom symbolizing refinement of character, good reputation, nobility, and warmth in welcoming guests."
+        meaning: "Sweet-scented blossom symbolizing refinement of character, good reputation, nobility, and warmth in welcoming guests.",
+        source: "Dr Sabriza"
       },
       "motif_cengkih": {
         title: "Motif Bunga Cengkih (Clove Flower)",
-        meaning: "Inspired by clove buds; symbolizes warmth, medicinal blessing, hospitality, and enduring fragrance."
+        meaning: "Inspired by clove buds; symbolizes warmth, medicinal blessing, hospitality, and enduring fragrance.",
+        source: "Dr Sabriza"
       },
       "motif_bunga_cengkih": {
         title: "Motif Bunga Cengkih (Clove Flower)",
-        meaning: "Inspired by clove buds; symbolizes warmth, medicinal blessing, hospitality, and enduring fragrance."
+        meaning: "Inspired by clove buds; symbolizes warmth, medicinal blessing, hospitality, and enduring fragrance.",
+        source: "Dr Sabriza"
       },
       "motif_cermai": {
         title: "Motif Buah Cermai",
-        meaning: "Lobed gooseberry form symbolizing sweetness of character behind firmness, and the generous sharing of blessings."
+        meaning: "Lobed gooseberry form symbolizing sweetness of character behind firmness, and the generous sharing of blessings.",
+        source: "Dr Sabriza"
       },
       "motif_bunga_cina": {
         title: "Motif Bunga Cina (Gardenia / Kaca Piring)",
-        meaning: "Gardenia floral form with layered petals; symbolizes purity, intercultural aesthetic harmony, and fine craftsmanship."
+        meaning: "Gardenia floral form with layered petals; symbolizes purity, intercultural aesthetic harmony, and fine craftsmanship.",
+        source: "Dr Sabriza"
       },
       "motif_kaca_piring": {
         title: "Motif Kaca Piring (Gardenia)",
-        meaning: "Gardenia floral form with layered petals; symbolizes purity, intercultural aesthetic harmony, and fine craftsmanship."
+        meaning: "Gardenia floral form with layered petals; symbolizes purity, intercultural aesthetic harmony, and fine craftsmanship.",
+        source: "Dr Sabriza"
       },
       "motif_dala": {
         title: "Motif Daun Dala",
-        meaning: "Tapered elegant foliage motif; symbolizes royal palace elegance, intellectual sharpness, and high social standing."
+        meaning: "Tapered elegant foliage motif; symbolizes royal palace elegance, intellectual sharpness, and high social standing.",
+        source: "Dr Sabriza"
       },
       "motif_daun_dala": {
         title: "Motif Daun Dala",
-        meaning: "Tapered elegant foliage motif; symbolizes royal palace elegance, intellectual sharpness, and high social standing."
+        meaning: "Tapered elegant foliage motif; symbolizes royal palace elegance, intellectual sharpness, and high social standing.",
+        source: "Dr Sabriza"
       },
       "motif_bunga_emas": {
         title: "Motif Bunga Emas",
-        meaning: "Radiant golden floral design symbolizing royal sovereignty, dignity, prosperity, and gratitude."
+        meaning: "Radiant golden floral design symbolizing royal sovereignty, dignity, prosperity, and gratitude.",
+        source: "Dr Sabriza"
       },
       "motif_janggut_keli": {
         title: "Motif Janggut Keli",
-        meaning: "Delicate flowing tendrils resembling catfish whiskers; symbolizes artistic fluidity, flexibility, and craftsmanship detail."
+        meaning: "Delicate flowing tendrils resembling catfish whiskers; symbolizes artistic fluidity, flexibility, and craftsmanship detail.",
+        source: "Dr Sabriza"
       },
       "motif_jejari_buaya": {
         title: "Motif Jejari Buaya (Jari Buaya)",
-        meaning: "Tapered serrated leaf pattern; symbolizes strength of household defense, structural protection, and orderly discipline."
+        meaning: "Tapered serrated leaf pattern; symbolizes strength of household defense, structural protection, and orderly discipline.",
+        source: "Dr Sabriza"
       },
       "motif_kangkung": {
         title: "Motif Daun Kangkung",
-        meaning: "Fast-growing water vine foliage; symbolizes adaptability, social fluidity, and flourishing vitality in all environments."
+        meaning: "Fast-growing water vine foliage; symbolizes adaptability, social fluidity, and flourishing vitality in all environments.",
+        source: "Dr Sabriza"
       },
       "motif_kantan": {
         title: "Motif Bunga Kantan (Torch Ginger)",
-        meaning: "Layered torch ginger blossom; symbolizes culinary heritage, uniqueness of local culture, and community solidarity."
+        meaning: "Layered torch ginger blossom; symbolizes culinary heritage, uniqueness of local culture, and community solidarity.",
+        source: "Dr Sabriza"
       },
       "motif_bunga_kantan": {
         title: "Motif Bunga Kantan (Torch Ginger)",
-        meaning: "Layered torch ginger blossom; symbolizes culinary heritage, uniqueness of local culture, and community solidarity."
+        meaning: "Layered torch ginger blossom; symbolizes culinary heritage, uniqueness of local culture, and community solidarity.",
+        source: "Dr Sabriza"
       },
       "motif_kapal_terbang": {
         title: "Motif Pokok Kapal Terbang (Siam Weed)",
-        meaning: "Medicinal herb leaf; symbolizes natural healing power, household wellness, and endurance through adversity."
+        meaning: "Medicinal herb leaf; symbolizes natural healing power, household wellness, and endurance through adversity.",
+        source: "Dr Sabriza"
       },
       "motif_pokok_kapal_terbang": {
         title: "Motif Pokok Kapal Terbang (Siam Weed)",
-        meaning: "Medicinal herb leaf; symbolizes natural healing power, household wellness, and endurance through adversity."
+        meaning: "Medicinal herb leaf; symbolizes natural healing power, household wellness, and endurance through adversity.",
+        source: "Dr Sabriza"
       },
       "motif_kecubung": {
         title: "Motif Bunga Kecubung",
-        meaning: "Trumpet-shaped floral geometry; symbolizes captivating beauty, orderliness, and fascination with nature's geometry."
+        meaning: "Trumpet-shaped floral geometry; symbolizes captivating beauty, orderliness, and fascination with nature's geometry.",
+        source: "Dr Sabriza"
       },
       "motif_kekacang": {
         title: "Motif Kekacang (Legume Pods & Tendrils)",
-        meaning: "Legume pods and vines; symbolizes fertility, continuous lineage, sustained sustenance, and close kinship bonds."
+        meaning: "Legume pods and vines; symbolizes fertility, continuous lineage, sustained sustenance, and close kinship bonds.",
+        source: "Dr Sabriza"
       },
       "motif_keladi": {
         title: "Motif Keladi Biak (Caladium Leaf)",
-        meaning: "Broad shield-like leaf; symbolizes domestic shelter, self-reliance, and resilience against tropical rain and weather."
+        meaning: "Broad shield-like leaf; symbolizes domestic shelter, self-reliance, and resilience against tropical rain and weather.",
+        source: "Dr Sabriza"
       },
       "motif_keladi_biak": {
         title: "Motif Keladi Biak (Caladium Leaf)",
-        meaning: "Broad shield-like leaf; symbolizes domestic shelter, self-reliance, and resilience against tropical rain and weather."
+        meaning: "Broad shield-like leaf; symbolizes domestic shelter, self-reliance, and resilience against tropical rain and weather.",
+        source: "Dr Sabriza"
       },
       "motif_kemboja": {
         title: "Motif Bunga Kemboja (Frangipani)",
-        meaning: "Frangipani flower symbolizing tranquility of the soul, enduring remembrance of ancestors, and spiritual peace."
+        meaning: "Frangipani flower symbolizing tranquility of the soul, enduring remembrance of ancestors, and spiritual peace.",
+        source: "Dr Sabriza"
       },
       "motif_kenanga": {
         title: "Motif Bunga Kenanga (Ylang Ylang)",
-        meaning: "Curled fragrant ylang-ylang petals; symbolizes gentleness of manners, loving kindness, and sweet reputation."
+        meaning: "Curled fragrant ylang-ylang petals; symbolizes gentleness of manners, loving kindness, and sweet reputation.",
+        source: "Dr Sabriza"
       },
       "motif_kenerak": {
         title: "Motif Bunga Kenerak",
-        meaning: "Rare fragrant rainforest flower; symbolizes unique distinction, treasured heritage, and inner serenity."
+        meaning: "Rare fragrant rainforest flower; symbolizes unique distinction, treasured heritage, and inner serenity.",
+        source: "Dr Sabriza"
       },
       "motif_kerak_nasi": {
         title: "Motif Bunga Kerak Nasi",
-        meaning: "Clustered blossom petals; symbolizes community mutual assistance (gotong-royong), modesty, and social unity."
+        meaning: "Clustered blossom petals; symbolizes community mutual assistance (gotong-royong), modesty, and social unity.",
+        source: "Dr Sabriza"
       },
       "motif_bunga_kerak_nasi": {
         title: "Motif Bunga Kerak Nasi",
-        meaning: "Clustered blossom petals; symbolizes community mutual assistance (gotong-royong), modesty, and social unity."
+        meaning: "Clustered blossom petals; symbolizes community mutual assistance (gotong-royong), modesty, and social unity.",
+        source: "Dr Sabriza"
       },
       "motif_ketam_guri": {
         title: "Motif Bunga Ketam Guri",
-        meaning: "Hardy yellow wild herb blossom; symbolizes perseverance, medicinal heritage, and quiet resilience."
+        meaning: "Hardy yellow wild herb blossom; symbolizes perseverance, medicinal heritage, and quiet resilience.",
+        source: "Dr Sabriza"
       },
       "motif_ketola": {
         title: "Motif Daun & Sulur Ketola (Luffa)",
-        meaning: "Climbing luffa vine and foliage; symbolizes continuity of blessings, softness of human relations, and fertility."
+        meaning: "Climbing luffa vine and foliage; symbolizes continuity of blessings, softness of human relations, and fertility.",
+        source: "Dr Sabriza"
       },
       "motif_ketumbit": {
         title: "Motif Bunga Ketumbit",
-        meaning: "Small herbal wildflower; symbolizes inner strength regardless of modest size, and simplicity of living."
+        meaning: "Small herbal wildflower; symbolizes inner strength regardless of modest size, and simplicity of living.",
+        source: "Dr Sabriza"
       },
       "motif_kiambang": {
         title: "Motif Kiambang (Water Lettuce)",
-        meaning: "Floating aquatic rosette; symbolizes the ability to adapt to changes, peace upon troubled waters, and purity."
+        meaning: "Floating aquatic rosette; symbolizes the ability to adapt to changes, peace upon troubled waters, and purity.",
+        source: "Dr Sabriza"
       },
       "motif_daun_lontar": {
         title: "Motif Daun Lontar (Palmyra Palm)",
-        meaning: "Radiating palmyra palm frond; symbolizes knowledge, literacy heritage of ancient manuscripts, and shelter."
+        meaning: "Radiating palmyra palm frond; symbolizes knowledge, literacy heritage of ancient manuscripts, and shelter.",
+        source: "Dr Sabriza"
       },
       "motif_daun_mempelas": {
         title: "Motif Daun Mempelas",
-        meaning: "Abrasive foliage used for wood polishing; symbolizes self-refinement, diligence in labor, and perfection of craft."
+        meaning: "Abrasive foliage used for wood polishing; symbolizes self-refinement, diligence in labor, and perfection of craft.",
+        source: "Dr Sabriza"
       },
       "motif_daun_pakis": {
         title: "Motif Daun Pakis (Pucuk Paku / Fern)",
-        meaning: "Curled fern frond; symbolizes gradual growth, humility (tawaduk), fertility, and natural organic movement."
+        meaning: "Curled fern frond; symbolizes gradual growth, humility (tawaduk), fertility, and natural organic movement.",
+        source: "Dr Sabriza"
       },
       "motif_pucuk_paku": {
         title: "Motif Pucuk Paku (Fern Shoot)",
-        meaning: "Curled fern frond; symbolizes gradual growth, humility (tawaduk), fertility, and natural organic movement."
+        meaning: "Curled fern frond; symbolizes gradual growth, humility (tawaduk), fertility, and natural organic movement.",
+        source: "Dr Sabriza"
       },
       "motif_daun_putik": {
         title: "Motif Daun Putik (Young Leaf Bud)",
-        meaning: "Sprouting young foliage bud; symbolizes fresh beginnings, purity of the youth, and future potential."
+        meaning: "Sprouting young foliage bud; symbolizes fresh beginnings, purity of the youth, and future potential.",
+        source: "Dr Sabriza"
       },
       "motif_daun_sirih": {
         title: "Motif Daun Sirih (Betel Leaf)",
-        meaning: "Heart-shaped betel leaf; symbolizes customary respect, honor toward guests, mutual consensus, and medicinal healing."
+        meaning: "Heart-shaped betel leaf; symbolizes customary respect, honor toward guests, mutual consensus, and medicinal healing.",
+        source: "Dr Sabriza"
       },
       "motif_daun_telipot": {
         title: "Motif Daun Telipot / Teratai (Lotus Leaf)",
-        meaning: "Round lotus leaf floating unblemished above water; symbolizes purity of heart unaffected by worldly impurities."
+        meaning: "Round lotus leaf floating unblemished above water; symbolizes purity of heart unaffected by worldly impurities.",
+        source: "Dr Sabriza"
       },
       "motif_teratai": {
         title: "Motif Bunga Teratai (Lotus)",
-        meaning: "Sacred lotus blossom symbolizing spiritual elevation, purity of soul, enlightenment, and divine grace."
+        meaning: "Sacred lotus blossom symbolizing spiritual elevation, purity of soul, enlightenment, and divine grace.",
+        source: "Dr Sabriza"
       },
       "motif_bunga_teratai": {
         title: "Motif Bunga Teratai (Lotus)",
-        meaning: "Sacred lotus blossom symbolizing spiritual elevation, purity of soul, enlightenment, and divine grace."
+        meaning: "Sacred lotus blossom symbolizing spiritual elevation, purity of soul, enlightenment, and divine grace.",
+        source: "Dr Sabriza"
       },
       "motif_melur": {
         title: "Motif Bunga Melur (Jasmine)",
-        meaning: "White jasmine blossom; symbolizes purity of heart, sincerity of purpose, and grace in behavior."
+        meaning: "White jasmine blossom; symbolizes purity of heart, sincerity of purpose, and grace in behavior.",
+        source: "Dr Sabriza"
       },
       "motif_bunga_melur": {
         title: "Motif Bunga Melur (Jasmine)",
-        meaning: "White jasmine blossom; symbolizes purity of heart, sincerity of purpose, and grace in behavior."
+        meaning: "White jasmine blossom; symbolizes purity of heart, sincerity of purpose, and grace in behavior.",
+        source: "Dr Sabriza"
       },
       "motif_raya": {
         title: "Motif Bunga Raya (Hibiscus)",
-        meaning: "Five-petaled hibiscus flower; symbolizes unity, national pride, vibrant life, and fundamental community principles."
+        meaning: "Five-petaled hibiscus flower; symbolizes unity, national pride, vibrant life, and fundamental community principles.",
+        source: "Dr Sabriza"
       },
       "motif_bunga_raya": {
         title: "Motif Bunga Raya (Hibiscus)",
-        meaning: "Five-petaled hibiscus flower; symbolizes unity, national pride, vibrant life, and fundamental community principles."
+        meaning: "Five-petaled hibiscus flower; symbolizes unity, national pride, vibrant life, and fundamental community principles.",
+        source: "Dr Sabriza"
       },
       "motif_matahari": {
         title: "Motif Bunga Matahari (Sunflower / Solar Motif)",
-        meaning: "Radiant sunflower pattern; symbolizes devotion to the Creator, vitality, solar energy, and intellectual enlightenment."
+        meaning: "Radiant sunflower pattern; symbolizes devotion to the Creator, vitality, solar energy, and intellectual enlightenment.",
+        source: "Dr Sabriza"
       },
       "motif_bunga_matahari": {
         title: "Motif Bunga Matahari (Sunflower / Solar Motif)",
-        meaning: "Radiant sunflower pattern; symbolizes devotion to the Creator, vitality, solar energy, and intellectual enlightenment."
+        meaning: "Radiant sunflower pattern; symbolizes devotion to the Creator, vitality, solar energy, and intellectual enlightenment.",
+        source: "Dr Sabriza"
       },
       "motif_buah_srikaya": {
         title: "Motif Buah Srikaya (Sugar Apple)",
-        meaning: "Lobed sugar-apple fruit form; symbolizes abundance of blessings, sweet disposition, and prosperous household wealth."
+        meaning: "Lobed sugar-apple fruit form; symbolizes abundance of blessings, sweet disposition, and prosperous household wealth.",
+        source: "Dr Sabriza"
       },
       "motif_senduduk": {
         title: "Motif Bunga Senduduk (Malabar Melastome)",
-        meaning: "Wild purple bloom; symbolizes perseverance in harsh conditions, healing properties, and humble unpretentious beauty."
+        meaning: "Wild purple bloom; symbolizes perseverance in harsh conditions, healing properties, and humble unpretentious beauty.",
+        source: "Dr Sabriza"
       },
       "motif_bunga_senduduk": {
         title: "Motif Bunga Senduduk (Malabar Melastome)",
-        meaning: "Wild purple bloom; symbolizes perseverance in harsh conditions, healing properties, and humble unpretentious beauty."
+        meaning: "Wild purple bloom; symbolizes perseverance in harsh conditions, healing properties, and humble unpretentious beauty.",
+        source: "Dr Sabriza"
       },
       "motif_pucuk_rebung": {
         title: "Motif Pucuk Rebung (Bamboo Shoot)",
-        meaning: "Triangular bamboo shoot; symbolizes gradual moral growth, social hierarchy, resilience, and spiritual ascent."
+        meaning: "Triangular bamboo shoot; symbolizes gradual moral growth, social hierarchy, resilience, and spiritual ascent.",
+        source: "Dr Sabriza"
       },
 
       // --- FAUNA & GEOMETRIC MOTIFS ---
       "motif_cecicak": {
         title: "Motif Cecicak (Kepala Cicak / Gecko)",
-        meaning: "Abstract gecko silhouette on roof gables; symbolizes environmental adaptation, vigilance, and household protection."
+        meaning: "Abstract gecko silhouette on roof gables; symbolizes environmental adaptation, vigilance, and household protection.",
+        source: "Dr Sabriza"
       },
       "motif_kuda_laut": {
         title: "Motif Kuda Laut (Seahorse)",
-        meaning: "Stylized aquatic seahorse; symbolizes patience, marital fidelity, tranquility, and marvel at marine creation."
+        meaning: "Stylized aquatic seahorse; symbolizes patience, marital fidelity, tranquility, and marvel at marine creation.",
+        source: "Dr Sabriza"
       },
       "motif_kupu_kupu": {
         title: "Motif Kupu-Kupu (Butterfly)",
-        meaning: "Symmetrical butterfly wings; symbolizes positive life transformation, aesthetic beauty, and spiritual freedom."
+        meaning: "Symmetrical butterfly wings; symbolizes positive life transformation, aesthetic beauty, and spiritual freedom.",
+        source: "Dr Sabriza"
       },
       "motif_gelang_tangan": {
         title: "Motif Gelang Tangan (Concentric Rings)",
-        meaning: "Interlinked circular rings; symbolizes unbreakable familial bonds, wholeness, integrity, and protective unity."
+        meaning: "Interlinked circular rings; symbolizes unbreakable familial bonds, wholeness, integrity, and protective unity.",
+        source: "Dr Sabriza"
       },
       "motif_kaki_gajah": {
         title: "Motif Kaki Gajah / Kaki Tiang Kepala Gajah",
-        meaning: "Solid flared base pillar carving; symbolizes structural fortitude, steadfast life principles, and immovable stability."
+        meaning: "Solid flared base pillar carving; symbolizes structural fortitude, steadfast life principles, and immovable stability.",
+        source: "Dr Sabriza"
       },
       "motif_kaki_tiang_kepala_gajah": {
         title: "Motif Kaki Tiang Kepala Gajah",
-        meaning: "Solid flared base pillar carving; symbolizes structural fortitude, steadfast life principles, and immovable stability."
+        meaning: "Solid flared base pillar carving; symbolizes structural fortitude, steadfast life principles, and immovable stability.",
+        source: "Dr Sabriza"
       },
       "motif_kipas": {
         title: "Motif Kipas (Radial Fan)",
-        meaning: "Semicircular radiating fan pattern; symbolizes refreshing comfort, hospitality, and openness to heavenly blessings."
+        meaning: "Semicircular radiating fan pattern; symbolizes refreshing comfort, hospitality, and openness to heavenly blessings.",
+        source: "Dr Sabriza"
       },
       "motif_itik_pulang_petang": {
         title: "Motif Itik Pulang Petang (Ducks Returning at Dusk)",
-        meaning: "Orderly rhythmic geometric rows; symbolizes social harmony, disciplined queuing, obedience to leaders, and unity."
+        meaning: "Orderly rhythmic geometric rows; symbolizes social harmony, disciplined queuing, obedience to leaders, and unity.",
+        source: "Dr Sabriza"
       },
       "motif_banji": {
         title: "Motif Banji (Swastika / Interlocking Geometry)",
-        meaning: "Interlocking rectilinear key pattern; symbolizes cosmic balance, longevity, architectural structure, and stability."
+        meaning: "Interlocking rectilinear key pattern; symbolizes cosmic balance, longevity, architectural structure, and stability.",
+        source: "Dr Sabriza"
       },
       "motif_lebah_bergantung": {
         title: "Motif Lebah Bergantung (Hanging Beehive)",
-        meaning: "Pendant honeycomb carving beneath roof eaves; symbolizes the sweet rewards of hard labor, diligence, and cooperation."
+        meaning: "Pendant honeycomb carving beneath roof eaves; symbolizes the sweet rewards of hard labor, diligence, and cooperation.",
+        source: "Dr Sabriza"
       },
 
       // --- COMPOSITION PATTERNS (POLA UKIRAN) ---
       "pola_bujang": {
         title: "Pola Bujang (Standalone Pattern)",
-        meaning: "Individual motifs carved independently or repeated separately; symbolizes individual identity, clarity, and focused intent."
+        meaning: "Individual motifs carved independently or repeated separately; symbolizes individual identity, clarity, and focused intent.",
+        source: "Dr Sabriza"
       },
       "pola_pemidang": {
         title: "Pola Pemidang (Framed / Border Pattern)",
-        meaning: "Motifs bound inside border frames on doors and panels; symbolizes social etiquette, moral boundaries, and self-restraint."
+        meaning: "Motifs bound inside border frames on doors and panels; symbolizes social etiquette, moral boundaries, and self-restraint.",
+        source: "Dr Sabriza"
       },
       "pola_lengkap": {
         title: "Pola Lengkap (Complete Botanical Pattern)",
-        meaning: "Full unified carving showing roots, stems, leaves, flowers, and shoots; symbolizes the complete cycle of life and maturity."
+        meaning: "Full unified carving showing roots, stems, leaves, flowers, and shoots; symbolizes the complete cycle of life and maturity.",
+        source: "Dr Sabriza"
       },
       "pola_sulur": {
         title: "Pola Sulur / Awan Larat (Meandering Vine)",
-        meaning: "Continuously curving unbroken vine pattern; symbolizes eternity, perseverance, modesty, and unbroken life cycle."
+        meaning: "Continuously curving unbroken vine pattern; symbolizes eternity, perseverance, modesty, and unbroken life cycle.",
+        source: "Dr Sabriza"
       },
       "pola_awan_larat": {
         title: "Pola Awan Larat (Meandering Cloud Pattern)",
-        meaning: "The most revered Malay wood carving composition; symbolizes endless continuity, harmony, and humble spiritual devotion."
+        meaning: "The most revered Malay wood carving composition; symbolizes endless continuity, harmony, and humble spiritual devotion.",
+        source: "Dr Sabriza"
       },
       "pola_lingkaran_batang_dan_ranting": {
         title: "Pola Lingkaran Batang & Ranting",
-        meaning: "Interlocking curved branches without abrupt breaks; symbolizes gentle brotherly love, mutual tolerance, and consensus."
-      },
-      "bunga_bakawali": {
-        title: "Bunga bakawali",
-        meaning: "Symbolizes modest beauty, purity of intent, and spiritual contemplation—blooming gracefully even in quiet isolation."
+        meaning: "Interlocking curved branches without abrupt breaks; symbolizes gentle brotherly love, mutual tolerance, and consensus.",
+        source: "Dr Sabriza"
       }
     };
-
 
     // Smart lookup helper function
     function getMotifInfo(className) {
@@ -519,10 +589,13 @@
       const normalized = className.toLowerCase().replace(/[\s-]+/g, "_").trim();
       if (MOTIF_DATA[normalized]) return MOTIF_DATA[normalized];
       if (MOTIF_DATA["motif_" + normalized]) return MOTIF_DATA["motif_" + normalized];
+      if (MOTIF_DATA["pola_" + normalized]) return MOTIF_DATA["pola_" + normalized];
       
-      const stripped = normalized.replace(/^(motif_|pola_|daun_|bunga_)/, "");
+      const stripped = normalized.replace(/^(motif_|pola_|daun_|bunga_|buah_)/, "");
       if (MOTIF_DATA[stripped]) return MOTIF_DATA[stripped];
       if (MOTIF_DATA["motif_" + stripped]) return MOTIF_DATA["motif_" + stripped];
+      if (MOTIF_DATA["motif_bunga_" + stripped]) return MOTIF_DATA["motif_bunga_" + stripped];
+      if (MOTIF_DATA["pola_" + stripped]) return MOTIF_DATA["pola_" + stripped];
 
       return {
         title: className,
@@ -610,7 +683,7 @@
     }
     document.getElementById("closeModalCross").addEventListener("click", closeModal);
     document.getElementById("closeModalBtn").addEventListener("click", closeModal);
-    modalBackdrop.addEventListener("click", (e) => { if(e.target === modalBackdrop) closeModal(); });
+    modalBackdrop.addEventListener("click", (e) => { if (e.target === modalBackdrop) closeModal(); });
 
     // 4. Image Upload, Drag-and-Drop & AI Inference
     const fileInput = document.getElementById("fileInput");
@@ -722,9 +795,9 @@
         await new Promise(r => setTimeout(r, 600));
         rankedResults = [
           {
-            title: MOTIF_DATA["motif_bunga_bakawali"].title,
-            meaning: MOTIF_DATA["motif_bunga_bakawali"].meaning,
-            source: MOTIF_DATA["motif_bunga_bakawali"].source,
+            title: MOTIF_DATA["motif_bakawali"].title,
+            meaning: MOTIF_DATA["motif_bakawali"].meaning,
+            source: MOTIF_DATA["motif_bakawali"].source,
             percentage: 70
           },
           {
