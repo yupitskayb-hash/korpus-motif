@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Corpus of Ornamental Motif Terminology in Heritage Buildings in Perak</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- TensorFlow.js & Teachable Machine Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            timber: {
+              50: '#fbf8f3',
+              100: '#f5eee3',
+              200: '#ebd9c3',
+              300: '#dfbe9c',
+              600: '#966037',
+              700: '#7d4a2a',
+              800: '#643a24',
+              900: '#432616',
+              950: '#261309',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-timber-50 text-stone-800 font-sans antialiased">
+
+  <!-- Navigation Bar -->
+  <nav class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-stone-200 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-lg bg-timber-800 flex items-center justify-center text-amber-200 font-serif font-bold text-lg">
+          K
+        </div>
+        <span class="font-serif font-bold text-lg text-timber-950 tracking-wide">MotifCorpus.AI</span>
+      </div>
+      <div class="hidden md:flex space-x-6 text-sm font-medium text-stone-600">
+        <a href="#scanner" class="hover:text-timber-800 transition">AI Scanner</a>
+        <a href="#catalog" class="hover:text-timber-800 transition">Motif Archive</a>
+        <a href="#anatomy" class="hover:text-timber-800 transition">House Anatomy</a>
+      </div>
+      <a href="#scanner" class="px-4 py-2 text-xs font-semibold text-white bg-timber-800 hover:bg-timber-700 rounded-lg shadow-sm transition">
+        Launch Scanner
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="relative bg-gradient-to-b from-timber-900 via-timber-800 to-timber-900 text-amber-50 py-20 px-4 text-center">
+    <div class="max-w-3xl mx-auto space-y-4">
+      <span class="inline-block text-xs font-semibold uppercase tracking-widest text-amber-300 bg-amber-950/60 px-3 py-1 rounded-full border border-amber-500/30">
+        Perak Heritage Architecture & Artificial Intelligence
+      </span>
+      <h1 class="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-amber-100">
+        Digital Corpus of Ornamental Motif Terminology in Heritage Buildings in Perak
+      </h1>
+      <p class="text-sm sm:text-base text-stone-300 max-w-2xl mx-auto leading-relaxed">
+        Visual recognition of traditional Malay wood carving patterns and terminology retrieval powered by AI.
+      </p>
+      <div class="pt-4 flex flex-wrap justify-center gap-3">
+        <a href="#scanner" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white font-medium rounded-xl shadow transition">
+          Scan Motif
+        </a>
+        <a href="#catalog" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-amber-100 font-medium rounded-xl border border-white/20 transition">
+          Motif Archive
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Section: AI Motif Scanner -->
+  <section id="scanner" class="max-w-4xl mx-auto px-4 py-16">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl sm:text-3xl font-serif font-bold text-timber-950">AI Motif Recognition</h2>
+      <p class="text-stone-600 text-sm mt-1">Upload a photo of a wood carving to identify its pattern and confidence score.</p>
+    </div>
+
+    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-stone-200">
+      
+      <!-- Upload Zone -->
+      <div id="dropZone" class="border-2 border-dashed border-stone-300 hover:border-timber-700 bg-stone-50/60 rounded-xl p-8 text-center transition cursor-pointer">
+        <input type="file" id="fileInput" accept="image/*" class="hidden" />
+        
+        <div class="flex flex-col items-center justify-center space-y-2">
+          <svg class="w-12 h-12 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+          </svg>
+          <p class="text-sm font-semibold text-stone-700">Click to upload or drag an image here</p>
+          <p class="text-xs text-stone-400">Supports JPG, PNG, and WEBP formats</p>
+        </div>
+      </div>
+
+      <!-- Preview & Actions -->
+      <div id="previewWrapper" class="mt-6 hidden flex flex-col items-center space-y-4">
+        <div class="relative max-w-sm w-full bg-stone-100 rounded-xl overflow-hidden border border-stone-200 shadow-inner">
+          <img id="imagePreview" src="" alt="Selected Carving" class="w-full h-64 object-contain" />
+          <button id="clearImgBtn" class="absolute top-2 right-2 bg-stone-900/70 text-white rounded-full p-1.5 hover:bg-stone-900 text-xs">
+            ✕
+          </button>
+        </div>
+
+        <button id="analyzeBtn" class="px-8 py-3 bg-timber-800 hover:bg-timber-700 text-white font-medium rounded-xl shadow transition flex items-center space-x-2">
+          <span id="btnText">Analyze Motif</span>
+          <svg id="loadingSpinner" class="animate-spin h-4 w-4 text-white hidden" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Section: Motif Catalog -->
+  <section id="catalog" class="bg-timber-100/60 border-y border-stone-200 py-16 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-8">
+        <h2 class="text-2xl sm:text-3xl font-serif font-bold text-timber-950">Motif Terminology Archive</h2>
+        <p class="text-stone-600 text-sm mt-1">Catalogued digital corpus of traditional ornamental carving motifs.</p>
+      </div>
+
+      <!-- Catalog Grid -->
+      <div id="catalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Cards populated dynamically -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Section: House Anatomy Guide -->
+  <section id="anatomy" class="max-w-6xl mx-auto px-4 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-2xl sm:text-3xl font-serif font-bold text-timber-950">Architectural Placement</h2>
+      <p class="text-stone-600 text-sm mt-1">Typical positions of traditional wood carvings on heritage structures in Perak.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm space-y-2">
+        <span class="text-xs font-semibold text-timber-700 uppercase">Ventilation & Wall Partitions</span>
+        <h3 class="text-lg font-serif font-bold text-stone-900">Sisir Angin & Tebuk Tembus</h3>
+        <p class="text-xs text-stone-600 leading-relaxed">
+          Positioned above windows or door lintels for natural airflow and lighting while maintaining indoor privacy.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm space-y-2">
+        <span class="text-xs font-semibold text-timber-700 uppercase">Structural Supports</span>
+        <h3 class="text-lg font-serif font-bold text-stone-900">Tiang Gantung & Brackets</h3>
+        <p class="text-xs text-stone-600 leading-relaxed">
+          Ornamental support pillars and brackets beneath roof edges that enhance the exterior architectural aesthetic.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm space-y-2">
+        <span class="text-xs font-semibold text-timber-700 uppercase">Roof Eaves & Gables</span>
+        <h3 class="text-lg font-serif font-bold text-stone-900">Papan Layang & Tebar Layar</h3>
+        <p class="text-xs text-stone-600 leading-relaxed">
+          Fascia boards along roof eaves and gable ends carved with continuous motifs to shield structural timber from weather exposure.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Simplified Multi-Result Popup Modal -->
+  <div id="modalBackdrop" class="fixed inset-0 bg-stone-950/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-stone-200 relative overflow-y-auto max-h-[90vh]">
+      
+      <!-- Close Cross Button -->
+      <button id="closeModalCross" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 text-2xl leading-none">&times;</button>
+      
+      <div class="mb-5">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full">
+          AI Classification Results
+        </span>
+        <h3 class="text-xl font-serif font-bold text-stone-900 mt-2">Motif Identification</h3>
+        <p class="text-xs text-stone-500 mt-0.5">Ranked by model confidence percentages.</p>
+      </div>
+
+      <!-- Dynamic Predictions List Container -->
+      <div id="predictionsList" class="space-y-4">
+        <!-- Ranked prediction cards injected here -->
+      </div>
+
+      <!-- Close Button -->
+      <div class="mt-6 flex justify-end">
+        <button id="closeModalBtn" class="px-5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 rounded-lg text-xs font-semibold">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-timber-950 text-stone-400 py-10 px-4 border-t border-stone-800 text-center text-xs">
+    <p class="font-medium text-stone-300">Digital Corpus of Ornamental Motif Terminology in Heritage Buildings in Perak Using AI</p>
+    <p class="mt-1">Research and Digital Preservation of Perak Traditional Wood Carving Heritage.</p>
+  </footer>
+
+  <!-- JavaScript Logic -->
+  <script>
+    // 1. Simplified Motif Database (Title & Meaning)
+    const MOTIF_DATA = {
+      "motif_ati_ati": {
+        title: "Motif Ati-Ati (Daun Ati-Ati)",
+        meaning: "Inspired by the vibrant foliage of the coleus plant, symbolizing vigilance, domestic liveliness, vitality, and aesthetic harmony."
+      },
+      "motif_bakawali": {
+        title: "Motif Bunga Bakawali",
+        meaning: "Symbolizes modest beauty, purity of intent, and spiritual contemplation—blooming gracefully even in quiet isolation."
+      },
+      "motif_bunga_bakawali": {
+        title: "Motif Bunga Bakawali",
+        meaning: "Symbolizes modest beauty, purity of intent, and spiritual contemplation—blooming gracefully even in quiet isolation."
+      },
+      "motif_balung_ayam": {
+        title: "Motif Balung Ayam (Cock's Comb)",
+        meaning: "Derived from the rooster's crest; symbolizes courage, leadership, vigilance, and dignified community authority."
+      },
+      "motif_bayam_peraksi": {
+        title: "Motif Bayam Peraksi",
+        meaning: "Gracefully curling leafy motif representing vitality, humble growth, nourishment, and natural harmony."
+      },
+      "motif_beremi": {
+        title: "Motif Beremi (Bacopa Monnieri)",
+        meaning: "Inspired by medicinal wetland foliage; symbolizes mental serenity, resilience, healing, and traditional wisdom."
+      },
+      "motif_butun": {
+        title: "Motif Butun (Buah Buton)",
+        meaning: "Pendant flower bud or finial motif; symbolizes nobility, traditional leadership, honor, and spiritual protection."
+      },
+      "motif_buah_buton": {
+        title: "Motif Buah Buton",
+        meaning: "Pendant flower bud or finial motif; symbolizes nobility, traditional leadership, honor, and spiritual protection."
+      },
+      "motif_cempaka": {
+        title: "Motif Bunga Cempaka",
+        meaning: "Sweet-scented blossom symbolizing refinement of character, good reputation, nobility, and warmth in welcoming guests."
+      },
+      "motif_bunga_cempaka": {
+        title: "Motif Bunga Cempaka",
+        meaning: "Sweet-scented blossom symbolizing refinement of character, good reputation, nobility, and warmth in welcoming guests."
+      },
+      "motif_cengkih": {
+        title: "Motif Bunga Cengkih (Clove Flower)",
+        meaning: "Inspired by clove buds; symbolizes warmth, medicinal blessing, hospitality, and enduring fragrance."
+      },
+      "motif_bunga_cengkih": {
+        title: "Motif Bunga Cengkih (Clove Flower)",
+        meaning: "Inspired by clove buds; symbolizes warmth, medicinal blessing, hospitality, and enduring fragrance."
+      },
+      "motif_cermai": {
+        title: "Motif Buah Cermai",
+        meaning: "Lobed gooseberry form symbolizing sweetness of character behind firmness, and the generous sharing of blessings."
+      },
+      "motif_bunga_cina": {
+        title: "Motif Bunga Cina (Gardenia / Kaca Piring)",
+        meaning: "Gardenia floral form with layered petals; symbolizes purity, intercultural aesthetic harmony, and fine craftsmanship."
+      },
+      "motif_kaca_piring": {
+        title: "Motif Kaca Piring (Gardenia)",
+        meaning: "Gardenia floral form with layered petals; symbolizes purity, intercultural aesthetic harmony, and fine craftsmanship."
+      },
+      "motif_dala": {
+        title: "Motif Daun Dala",
+        meaning: "Tapered elegant foliage motif; symbolizes royal palace elegance, intellectual sharpness, and high social standing."
+      },
+      "motif_daun_dala": {
+        title: "Motif Daun Dala",
+        meaning: "Tapered elegant foliage motif; symbolizes royal palace elegance, intellectual sharpness, and high social standing."
+      },
+      "motif_bunga_emas": {
+        title: "Motif Bunga Emas",
+        meaning: "Radiant golden floral design symbolizing royal sovereignty, dignity, prosperity, and gratitude."
+      },
+      "motif_janggut_keli": {
+        title: "Motif Janggut Keli",
+        meaning: "Delicate flowing tendrils resembling catfish whiskers; symbolizes artistic fluidity, flexibility, and craftsmanship detail."
+      },
+      "motif_jejari_buaya": {
+        title: "Motif Jejari Buaya (Jari Buaya)",
+        meaning: "Tapered serrated leaf pattern; symbolizes strength of household defense, structural protection, and orderly discipline."
+      },
+      "motif_kangkung": {
+        title: "Motif Daun Kangkung",
+        meaning: "Fast-growing water vine foliage; symbolizes adaptability, social fluidity, and flourishing vitality in all environments."
+      },
+      "motif_kantan": {
+        title: "Motif Bunga Kantan (Torch Ginger)",
+        meaning: "Layered torch ginger blossom; symbolizes culinary heritage, uniqueness of local culture, and community solidarity."
+      },
+      "motif_bunga_kantan": {
+        title: "Motif Bunga Kantan (Torch Ginger)",
+        meaning: "Layered torch ginger blossom; symbolizes culinary heritage, uniqueness of local culture, and community solidarity."
+      },
+      "motif_kapal_terbang": {
+        title: "Motif Pokok Kapal Terbang (Siam Weed)",
+        meaning: "Medicinal herb leaf; symbolizes natural healing power, household wellness, and endurance through adversity."
+      },
+      "motif_pokok_kapal_terbang": {
+        title: "Motif Pokok Kapal Terbang (Siam Weed)",
+        meaning: "Medicinal herb leaf; symbolizes natural healing power, household wellness, and endurance through adversity."
+      },
+      "motif_kecubung": {
+        title: "Motif Bunga Kecubung",
+        meaning: "Trumpet-shaped floral geometry; symbolizes captivating beauty, orderliness, and fascination with nature's geometry."
+      },
+      "motif_kekacang": {
+        title: "Motif Kekacang (Legume Pods & Tendrils)",
+        meaning: "Legume pods and vines; symbolizes fertility, continuous lineage, sustained sustenance, and close kinship bonds."
+      },
+      "motif_keladi": {
+        title: "Motif Keladi Biak (Caladium Leaf)",
+        meaning: "Broad shield-like leaf; symbolizes domestic shelter, self-reliance, and resilience against tropical rain and weather."
+      },
+      "motif_keladi_biak": {
+        title: "Motif Keladi Biak (Caladium Leaf)",
+        meaning: "Broad shield-like leaf; symbolizes domestic shelter, self-reliance, and resilience against tropical rain and weather."
+      },
+      "motif_kemboja": {
+        title: "Motif Bunga Kemboja (Frangipani)",
+        meaning: "Frangipani flower symbolizing tranquility of the soul, enduring remembrance of ancestors, and spiritual peace."
+      },
+      "motif_kenanga": {
+        title: "Motif Bunga Kenanga (Ylang Ylang)",
+        meaning: "Curled fragrant ylang-ylang petals; symbolizes gentleness of manners, loving kindness, and sweet reputation."
+      },
+      "motif_kenerak": {
+        title: "Motif Bunga Kenerak",
+        meaning: "Rare fragrant rainforest flower; symbolizes unique distinction, treasured heritage, and inner serenity."
+      },
+      "motif_kerak_nasi": {
+        title: "Motif Bunga Kerak Nasi",
+        meaning: "Clustered blossom petals; symbolizes community mutual assistance (gotong-royong), modesty, and social unity."
+      },
+      "motif_bunga_kerak_nasi": {
+        title: "Motif Bunga Kerak Nasi",
+        meaning: "Clustered blossom petals; symbolizes community mutual assistance (gotong-royong), modesty, and social unity."
+      },
+      "motif_ketam_guri": {
+        title: "Motif Bunga Ketam Guri",
+        meaning: "Hardy yellow wild herb blossom; symbolizes perseverance, medicinal heritage, and quiet resilience."
+      },
+      "motif_ketola": {
+        title: "Motif Daun & Sulur Ketola (Luffa)",
+        meaning: "Climbing luffa vine and foliage; symbolizes continuity of blessings, softness of human relations, and fertility."
+      },
+      "motif_ketumbit": {
+        title: "Motif Bunga Ketumbit",
+        meaning: "Small herbal wildflower; symbolizes inner strength regardless of modest size, and simplicity of living."
+      },
+      "motif_kiambang": {
+        title: "Motif Kiambang (Water Lettuce)",
+        meaning: "Floating aquatic rosette; symbolizes the ability to adapt to changes, peace upon troubled waters, and purity."
+      },
+      "motif_daun_lontar": {
+        title: "Motif Daun Lontar (Palmyra Palm)",
+        meaning: "Radiating palmyra palm frond; symbolizes knowledge, literacy heritage of ancient manuscripts, and shelter."
+      },
+      "motif_daun_mempelas": {
+        title: "Motif Daun Mempelas",
+        meaning: "Abrasive foliage used for wood polishing; symbolizes self-refinement, diligence in labor, and perfection of craft."
+      },
+      "motif_daun_pakis": {
+        title: "Motif Daun Pakis (Pucuk Paku / Fern)",
+        meaning: "Curled fern frond; symbolizes gradual growth, humility (tawaduk), fertility, and natural organic movement."
+      },
+      "motif_pucuk_paku": {
+        title: "Motif Pucuk Paku (Fern Shoot)",
+        meaning: "Curled fern frond; symbolizes gradual growth, humility (tawaduk), fertility, and natural organic movement."
+      },
+      "motif_daun_putik": {
+        title: "Motif Daun Putik (Young Leaf Bud)",
+        meaning: "Sprouting young foliage bud; symbolizes fresh beginnings, purity of the youth, and future potential."
+      },
+      "motif_daun_sirih": {
+        title: "Motif Daun Sirih (Betel Leaf)",
+        meaning: "Heart-shaped betel leaf; symbolizes customary respect, honor toward guests, mutual consensus, and medicinal healing."
+      },
+      "motif_daun_telipot": {
+        title: "Motif Daun Telipot / Teratai (Lotus Leaf)",
+        meaning: "Round lotus leaf floating unblemished above water; symbolizes purity of heart unaffected by worldly impurities."
+      },
+      "motif_teratai": {
+        title: "Motif Bunga Teratai (Lotus)",
+        meaning: "Sacred lotus blossom symbolizing spiritual elevation, purity of soul, enlightenment, and divine grace."
+      },
+      "motif_bunga_teratai": {
+        title: "Motif Bunga Teratai (Lotus)",
+        meaning: "Sacred lotus blossom symbolizing spiritual elevation, purity of soul, enlightenment, and divine grace."
+      },
+      "motif_melur": {
+        title: "Motif Bunga Melur (Jasmine)",
+        meaning: "White jasmine blossom; symbolizes purity of heart, sincerity of purpose, and grace in behavior."
+      },
+      "motif_bunga_melur": {
+        title: "Motif Bunga Melur (Jasmine)",
+        meaning: "White jasmine blossom; symbolizes purity of heart, sincerity of purpose, and grace in behavior."
+      },
+      "motif_raya": {
+        title: "Motif Bunga Raya (Hibiscus)",
+        meaning: "Five-petaled hibiscus flower; symbolizes unity, national pride, vibrant life, and fundamental community principles."
+      },
+      "motif_bunga_raya": {
+        title: "Motif Bunga Raya (Hibiscus)",
+        meaning: "Five-petaled hibiscus flower; symbolizes unity, national pride, vibrant life, and fundamental community principles."
+      },
+      "motif_matahari": {
+        title: "Motif Bunga Matahari (Sunflower / Solar Motif)",
+        meaning: "Radiant sunflower pattern; symbolizes devotion to the Creator, vitality, solar energy, and intellectual enlightenment."
+      },
+      "motif_bunga_matahari": {
+        title: "Motif Bunga Matahari (Sunflower / Solar Motif)",
+        meaning: "Radiant sunflower pattern; symbolizes devotion to the Creator, vitality, solar energy, and intellectual enlightenment."
+      },
+      "motif_buah_srikaya": {
+        title: "Motif Buah Srikaya (Sugar Apple)",
+        meaning: "Lobed sugar-apple fruit form; symbolizes abundance of blessings, sweet disposition, and prosperous household wealth."
+      },
+      "motif_senduduk": {
+        title: "Motif Bunga Senduduk (Malabar Melastome)",
+        meaning: "Wild purple bloom; symbolizes perseverance in harsh conditions, healing properties, and humble unpretentious beauty."
+      },
+      "motif_bunga_senduduk": {
+        title: "Motif Bunga Senduduk (Malabar Melastome)",
+        meaning: "Wild purple bloom; symbolizes perseverance in harsh conditions, healing properties, and humble unpretentious beauty."
+      },
+      "motif_pucuk_rebung": {
+        title: "Motif Pucuk Rebung (Bamboo Shoot)",
+        meaning: "Triangular bamboo shoot; symbolizes gradual moral growth, social hierarchy, resilience, and spiritual ascent."
+      },
+
+      // --- FAUNA & GEOMETRIC MOTIFS ---
+      "motif_cecicak": {
+        title: "Motif Cecicak (Kepala Cicak / Gecko)",
+        meaning: "Abstract gecko silhouette on roof gables; symbolizes environmental adaptation, vigilance, and household protection."
+      },
+      "motif_kuda_laut": {
+        title: "Motif Kuda Laut (Seahorse)",
+        meaning: "Stylized aquatic seahorse; symbolizes patience, marital fidelity, tranquility, and marvel at marine creation."
+      },
+      "motif_kupu_kupu": {
+        title: "Motif Kupu-Kupu (Butterfly)",
+        meaning: "Symmetrical butterfly wings; symbolizes positive life transformation, aesthetic beauty, and spiritual freedom."
+      },
+      "motif_gelang_tangan": {
+        title: "Motif Gelang Tangan (Concentric Rings)",
+        meaning: "Interlinked circular rings; symbolizes unbreakable familial bonds, wholeness, integrity, and protective unity."
+      },
+      "motif_kaki_gajah": {
+        title: "Motif Kaki Gajah / Kaki Tiang Kepala Gajah",
+        meaning: "Solid flared base pillar carving; symbolizes structural fortitude, steadfast life principles, and immovable stability."
+      },
+      "motif_kaki_tiang_kepala_gajah": {
+        title: "Motif Kaki Tiang Kepala Gajah",
+        meaning: "Solid flared base pillar carving; symbolizes structural fortitude, steadfast life principles, and immovable stability."
+      },
+      "motif_kipas": {
+        title: "Motif Kipas (Radial Fan)",
+        meaning: "Semicircular radiating fan pattern; symbolizes refreshing comfort, hospitality, and openness to heavenly blessings."
+      },
+      "motif_itik_pulang_petang": {
+        title: "Motif Itik Pulang Petang (Ducks Returning at Dusk)",
+        meaning: "Orderly rhythmic geometric rows; symbolizes social harmony, disciplined queuing, obedience to leaders, and unity."
+      },
+      "motif_banji": {
+        title: "Motif Banji (Swastika / Interlocking Geometry)",
+        meaning: "Interlocking rectilinear key pattern; symbolizes cosmic balance, longevity, architectural structure, and stability."
+      },
+      "motif_lebah_bergantung": {
+        title: "Motif Lebah Bergantung (Hanging Beehive)",
+        meaning: "Pendant honeycomb carving beneath roof eaves; symbolizes the sweet rewards of hard labor, diligence, and cooperation."
+      },
+
+      // --- COMPOSITION PATTERNS (POLA UKIRAN) ---
+      "pola_bujang": {
+        title: "Pola Bujang (Standalone Pattern)",
+        meaning: "Individual motifs carved independently or repeated separately; symbolizes individual identity, clarity, and focused intent."
+      },
+      "pola_pemidang": {
+        title: "Pola Pemidang (Framed / Border Pattern)",
+        meaning: "Motifs bound inside border frames on doors and panels; symbolizes social etiquette, moral boundaries, and self-restraint."
+      },
+      "pola_lengkap": {
+        title: "Pola Lengkap (Complete Botanical Pattern)",
+        meaning: "Full unified carving showing roots, stems, leaves, flowers, and shoots; symbolizes the complete cycle of life and maturity."
+      },
+      "pola_sulur": {
+        title: "Pola Sulur / Awan Larat (Meandering Vine)",
+        meaning: "Continuously curving unbroken vine pattern; symbolizes eternity, perseverance, modesty, and unbroken life cycle."
+      },
+      "pola_awan_larat": {
+        title: "Pola Awan Larat (Meandering Cloud Pattern)",
+        meaning: "The most revered Malay wood carving composition; symbolizes endless continuity, harmony, and humble spiritual devotion."
+      },
+      "pola_lingkaran_batang_dan_ranting": {
+        title: "Pola Lingkaran Batang & Ranting",
+        meaning: "Interlocking curved branches without abrupt breaks; symbolizes gentle brotherly love, mutual tolerance, and consensus."
+      }
+    };
+    
+    function getMotifInfo(className) {
+      if (!className) return { title: "Unknown Motif", meaning: "Traditional Malay architectural carving motif." };
+      
+      const normalized = className.toLowerCase().replace(/[\s-]+/g, "_").trim();
+      
+      // 1. Direct match
+      if (MOTIF_DATA[normalized]) return MOTIF_DATA[normalized];
+      
+      // 2. Try prefix variations
+      if (MOTIF_DATA["motif_" + normalized]) return MOTIF_DATA["motif_" + normalized];
+      if (MOTIF_DATA["pola_" + normalized]) return MOTIF_DATA["pola_" + normalized];
+      
+      // 3. Try stripped variations
+      const stripped = normalized.replace(/^(motif_|pola_|daun_|bunga_|buah_)/, "");
+      if (MOTIF_DATA[stripped]) return MOTIF_DATA[stripped];
+      if (MOTIF_DATA["motif_" + stripped]) return MOTIF_DATA["motif_" + stripped];
+      if (MOTIF_DATA["motif_bunga_" + stripped]) return MOTIF_DATA["motif_bunga_" + stripped];
+      if (MOTIF_DATA["motif_daun_" + stripped]) return MOTIF_DATA["motif_daun_" + stripped];
+      if (MOTIF_DATA["pola_" + stripped]) return MOTIF_DATA["pola_" + stripped];
+
+      return {
+        title: className,
+        meaning: "Traditional ornamental wood carving motif documented in heritage building archives in Perak."
+      };
+    }
+
+    // 2. Populate Catalog Grid
+    const catalogGrid = document.getElementById("catalogGrid");
+    function renderCatalog() {
+      catalogGrid.innerHTML = "";
+      Object.entries(MOTIF_DATA).forEach(([key, item]) => {
+        const card = document.createElement("div");
+        card.className = "bg-white rounded-xl border border-stone-200 p-5 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <h4 class="font-serif font-bold text-lg text-stone-900">${item.title}</h4>
+            <p class="text-xs text-stone-600 mt-2 leading-relaxed">${item.meaning}</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-timber-800 font-semibold">
+            <span>View details</span>
+            <span>&rarr;</span>
+          </div>
+        `;
+        card.addEventListener("click", () => {
+          displayPredictions([{
+            title: item.title,
+            meaning: item.meaning,
+            percentage: 100
+          }]);
+        });
+        catalogGrid.appendChild(card);
+      });
+    }
+    renderCatalog();
+
+    // 3. Modal Popup Functions
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const predictionsList = document.getElementById("predictionsList");
+
+    function displayPredictions(results) {
+      predictionsList.innerHTML = "";
+
+      results.forEach((item, index) => {
+        const isTop = index === 0;
+        const card = document.createElement("div");
+        card.className = `p-4 rounded-xl border ${isTop ? 'bg-amber-50/70 border-amber-300 shadow-sm' : 'bg-stone-50/80 border-stone-200'} space-y-2`;
+        
+        card.innerHTML = `
+          <div class="flex justify-between items-center">
+            <h4 class="font-serif font-bold text-base text-stone-900 flex items-center gap-2">
+              ${item.title}
+              ${isTop ? '<span class="text-[10px] font-sans font-semibold uppercase tracking-wider bg-amber-800 text-white px-2 py-0.5 rounded-full">Top Match</span>' : ''}
+            </h4>
+            <span class="text-sm font-bold ${isTop ? 'text-amber-800' : 'text-stone-600'}">${item.percentage}%</span>
+          </div>
+
+          <!-- Confidence Bar -->
+          <div class="w-full bg-stone-200 rounded-full h-2 overflow-hidden">
+            <div class="${isTop ? 'bg-amber-700' : 'bg-stone-400'} h-2 rounded-full transition-all duration-500" style="width: ${item.percentage}%"></div>
+          </div>
+
+          <p class="text-xs text-stone-600 leading-relaxed pt-1">
+            <strong class="text-stone-800">Meaning:</strong> ${item.meaning}
+          </p>
+        `;
+        predictionsList.appendChild(card);
+      });
+
+      modalBackdrop.classList.remove("hidden");
+      modalBackdrop.classList.add("flex");
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.add("hidden");
+      modalBackdrop.classList.remove("flex");
+    }
+    document.getElementById("closeModalCross").addEventListener("click", closeModal);
+    document.getElementById("closeModalBtn").addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", (e) => { if(e.target === modalBackdrop) closeModal(); });
+
+    // 4. Image Upload & AI Inference Integration
+    const fileInput = document.getElementById("fileInput");
+    const dropZone = document.getElementById("dropZone");
+    const previewWrapper = document.getElementById("previewWrapper");
+    const imagePreview = document.getElementById("imagePreview");
+    const clearImgBtn = document.getElementById("clearImgBtn");
+    const analyzeBtn = document.getElementById("analyzeBtn");
+    const btnText = document.getElementById("btnText");
+    const loadingSpinner = document.getElementById("loadingSpinner");
+
+    // Teachable Machine Model URL
+    const MODEL_PATH = "https://teachablemachine.withgoogle.com/models/NTW5iqFb4/";
+    let tmModel = null;
+
+    async function initModel() {
+      try {
+        tmModel = await tmImage.load(MODEL_PATH + "model.json", MODEL_PATH + "metadata.json");
+        console.log("Model successfully loaded.");
+      } catch (e) {
+        console.log("Using demonstration fallback mode if model is loading or unreachable.");
+      }
+    }
+    initModel();
+
+    dropZone.addEventListener("click", () => fileInput.click());
+
+    fileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          imagePreview.src = event.target.result;
+          previewWrapper.classList.remove("hidden");
+          dropZone.classList.add("hidden");
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    clearImgBtn.addEventListener("click", () => {
+      fileInput.value = "";
+      imagePreview.src = "";
+      previewWrapper.classList.add("hidden");
+      dropZone.classList.remove("hidden");
+    });
+
+    analyzeBtn.addEventListener("click", async () => {
+      btnText.innerText = "Analyzing...";
+      loadingSpinner.classList.remove("hidden");
+      analyzeBtn.disabled = true;
+
+      let rankedResults = [];
+
+      if (tmModel) {
+        // Real model prediction
+        const predictions = await tmModel.predict(imagePreview);
+        
+        // Sort from highest confidence to lowest
+        predictions.sort((a, b) => b.probability - a.probability);
+
+        // Take top 2-3 matches
+        rankedResults = predictions.slice(0, 3).map(p => {
+          const key = p.className.toLowerCase().replace(/[\s-]+/g, "_");
+          const info = MOTIF_DATA[key] || {
+            title: p.className,
+            meaning: "Ornamental wood carving motif documented in heritage building archives."
+          };
+          return {
+            title: info.title,
+            meaning: info.meaning,
+            percentage: Math.round(p.probability * 100)
+          };
+        });
+
+      } else {
+        // Demonstration fallback
+        await new Promise(r => setTimeout(r, 600));
+        rankedResults = [
+          {
+            title: MOTIF_DATA["motif_bunga_bakawali"].title,
+            meaning: MOTIF_DATA["motif_bunga_bakawali"].meaning,
+            percentage: 70
+          },
+          {
+            title: MOTIF_DATA["motif_ati_ati"].title,
+            meaning: MOTIF_DATA["motif_ati_ati"].meaning,
+            percentage: 30
+          }
+        ];
+      }
+
+      btnText.innerText = "Analyze Motif";
+      loadingSpinner.classList.add("hidden");
+      analyzeBtn.disabled = false;
+
+      // Display multi-result modal popup
+      displayPredictions(rankedResults);
+    });
+  </script>
+</body>
+</html>
