@@ -83,16 +83,16 @@
   <section id="scanner" class="max-w-4xl mx-auto px-4 py-16">
     <div class="text-center mb-8">
       <h2 class="text-2xl sm:text-3xl font-serif font-bold text-timber-950">AI Motif Recognition</h2>
-      <p class="text-stone-600 text-sm mt-1">Upload a photo of a wood carving to identify its pattern and confidence score.</p>
+      <p class="text-stone-600 text-sm mt-1">Upload or drag a carving photo to identify the motif and confidence score.</p>
     </div>
 
     <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-stone-200">
       
-      <!-- Upload Zone -->
+      <!-- Upload / Drop Zone -->
       <div id="dropZone" class="border-2 border-dashed border-stone-300 hover:border-timber-700 bg-stone-50/60 rounded-xl p-8 text-center transition cursor-pointer">
         <input type="file" id="fileInput" accept="image/*" class="hidden" />
         
-        <div class="flex flex-col items-center justify-center space-y-2">
+        <div class="flex flex-col items-center justify-center space-y-2 pointer-events-none">
           <svg class="w-12 h-12 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
           </svg>
@@ -209,15 +209,17 @@
 
   <!-- JavaScript Logic -->
   <script>
-    // 1. Simplified Motif Database (Title & Meaning)
+    // 1. Simplified Motif Database (Title, Meaning, and Source)
     const MOTIF_DATA = {
       "motif_ati_ati": {
         title: "Motif Ati-Ati (Daun Ati-Ati)",
-        meaning: "Inspired by the vibrant foliage of the coleus plant, symbolizing vigilance, domestic liveliness, vitality, and aesthetic harmony."
+        meaning: "Inspired by the vibrant foliage of the coleus plant, symbolizing vigilance, domestic liveliness, vitality, and aesthetic harmony.",
+        source: "Kajian Simbolisme Pada Elemen Estetik Dan Ragam Hias Seni Bina Tradisional Melayu, Dr Sabriza"
       },
       "motif_bakawali": {
         title: "Motif Bunga Bakawali",
-        meaning: "Symbolizes modest beauty, purity of intent, and spiritual contemplation—blooming gracefully even in quiet isolation."
+        meaning: "Symbolizes modest beauty, purity of intent, and spiritual contemplation—blooming gracefully even in quiet isolation.",
+        source: "Kajian Simbolisme Pada Elemen Estetik Dan Ragam Hias Seni Bina Tradisional Melayu, Dr Sabriza"
       },
       "motif_bunga_bakawali": {
         title: "Motif Bunga Bakawali",
@@ -508,30 +510,24 @@
         meaning: "Interlocking curved branches without abrupt breaks; symbolizes gentle brotherly love, mutual tolerance, and consensus."
       }
     };
-    
+
+
+    // Smart lookup helper function
     function getMotifInfo(className) {
-      if (!className) return { title: "Unknown Motif", meaning: "Traditional Malay architectural carving motif." };
+      if (!className) return { title: "Unknown Motif", meaning: "Traditional Malay architectural carving motif.", source: "Dr Sabriza" };
       
       const normalized = className.toLowerCase().replace(/[\s-]+/g, "_").trim();
-      
-      // 1. Direct match
       if (MOTIF_DATA[normalized]) return MOTIF_DATA[normalized];
-      
-      // 2. Try prefix variations
       if (MOTIF_DATA["motif_" + normalized]) return MOTIF_DATA["motif_" + normalized];
-      if (MOTIF_DATA["pola_" + normalized]) return MOTIF_DATA["pola_" + normalized];
       
-      // 3. Try stripped variations
-      const stripped = normalized.replace(/^(motif_|pola_|daun_|bunga_|buah_)/, "");
+      const stripped = normalized.replace(/^(motif_|pola_|daun_|bunga_)/, "");
       if (MOTIF_DATA[stripped]) return MOTIF_DATA[stripped];
       if (MOTIF_DATA["motif_" + stripped]) return MOTIF_DATA["motif_" + stripped];
-      if (MOTIF_DATA["motif_bunga_" + stripped]) return MOTIF_DATA["motif_bunga_" + stripped];
-      if (MOTIF_DATA["motif_daun_" + stripped]) return MOTIF_DATA["motif_daun_" + stripped];
-      if (MOTIF_DATA["pola_" + stripped]) return MOTIF_DATA["pola_" + stripped];
 
       return {
         title: className,
-        meaning: "Traditional ornamental wood carving motif documented in heritage building archives in Perak."
+        meaning: "Traditional ornamental wood carving motif documented in heritage building archives in Perak.",
+        source: "Dr Sabriza"
       };
     }
 
@@ -546,6 +542,7 @@
           <div>
             <h4 class="font-serif font-bold text-lg text-stone-900">${item.title}</h4>
             <p class="text-xs text-stone-600 mt-2 leading-relaxed">${item.meaning}</p>
+            ${item.source ? `<p class="text-[11px] text-amber-900/80 mt-2 font-medium"><strong>Source:</strong> ${item.source}</p>` : ''}
           </div>
           <div class="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-timber-800 font-semibold">
             <span>View details</span>
@@ -556,6 +553,7 @@
           displayPredictions([{
             title: item.title,
             meaning: item.meaning,
+            source: item.source,
             percentage: 100
           }]);
         });
@@ -593,6 +591,11 @@
           <p class="text-xs text-stone-600 leading-relaxed pt-1">
             <strong class="text-stone-800">Meaning:</strong> ${item.meaning}
           </p>
+
+          ${item.source ? `
+          <p class="text-[11px] text-stone-500 pt-0.5">
+            <strong class="text-stone-700">Source:</strong> ${item.source}
+          </p>` : ''}
         `;
         predictionsList.appendChild(card);
       });
@@ -609,7 +612,7 @@
     document.getElementById("closeModalBtn").addEventListener("click", closeModal);
     modalBackdrop.addEventListener("click", (e) => { if(e.target === modalBackdrop) closeModal(); });
 
-    // 4. Image Upload & AI Inference Integration
+    // 4. Image Upload, Drag-and-Drop & AI Inference
     const fileInput = document.getElementById("fileInput");
     const dropZone = document.getElementById("dropZone");
     const previewWrapper = document.getElementById("previewWrapper");
@@ -619,7 +622,7 @@
     const btnText = document.getElementById("btnText");
     const loadingSpinner = document.getElementById("loadingSpinner");
 
-    // Teachable Machine Model URL
+    // Your Teachable Machine Model URL
     const MODEL_PATH = "https://teachablemachine.withgoogle.com/models/NTW5iqFb4/";
     let tmModel = null;
 
@@ -633,11 +636,9 @@
     }
     initModel();
 
-    dropZone.addEventListener("click", () => fileInput.click());
-
-    fileInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
+    // Helper to process uploaded or dropped image
+    function processImageFile(file) {
+      if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onload = (event) => {
           imagePreview.src = event.target.result;
@@ -646,8 +647,43 @@
         };
         reader.readAsDataURL(file);
       }
+    }
+
+    // A. Click to choose file
+    dropZone.addEventListener("click", () => fileInput.click());
+
+    fileInput.addEventListener("change", (e) => {
+      if (e.target.files && e.target.files[0]) {
+        processImageFile(e.target.files[0]);
+      }
     });
 
+    // B. Prevent default behavior on dragover (stops browser from opening the image)
+    ["dragenter", "dragover"].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.add("border-amber-800", "bg-amber-100/60");
+      });
+    });
+
+    ["dragleave", "drop"].forEach(eventName => {
+      dropZone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropZone.classList.remove("border-amber-800", "bg-amber-100/60");
+      });
+    });
+
+    // C. Catch dropped file
+    dropZone.addEventListener("drop", (e) => {
+      const files = e.dataTransfer.files;
+      if (files && files.length > 0) {
+        processImageFile(files[0]);
+      }
+    });
+
+    // D. Clear Image Button
     clearImgBtn.addEventListener("click", () => {
       fileInput.value = "";
       imagePreview.src = "";
@@ -655,6 +691,7 @@
       dropZone.classList.remove("hidden");
     });
 
+    // E. Analyze Button
     analyzeBtn.addEventListener("click", async () => {
       btnText.innerText = "Analyzing...";
       loadingSpinner.classList.remove("hidden");
@@ -671,14 +708,11 @@
 
         // Take top 2-3 matches
         rankedResults = predictions.slice(0, 3).map(p => {
-          const key = p.className.toLowerCase().replace(/[\s-]+/g, "_");
-          const info = MOTIF_DATA[key] || {
-            title: p.className,
-            meaning: "Ornamental wood carving motif documented in heritage building archives."
-          };
+          const info = getMotifInfo(p.className);
           return {
             title: info.title,
             meaning: info.meaning,
+            source: info.source,
             percentage: Math.round(p.probability * 100)
           };
         });
@@ -690,11 +724,13 @@
           {
             title: MOTIF_DATA["motif_bunga_bakawali"].title,
             meaning: MOTIF_DATA["motif_bunga_bakawali"].meaning,
+            source: MOTIF_DATA["motif_bunga_bakawali"].source,
             percentage: 70
           },
           {
             title: MOTIF_DATA["motif_ati_ati"].title,
             meaning: MOTIF_DATA["motif_ati_ati"].meaning,
+            source: MOTIF_DATA["motif_ati_ati"].source,
             percentage: 30
           }
         ];
