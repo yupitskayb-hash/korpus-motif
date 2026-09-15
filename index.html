@@ -56,28 +56,40 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <header class="relative bg-gradient-to-b from-timber-900 via-timber-800 to-timber-900 text-amber-50 py-20 px-4 text-center">
-    <div class="max-w-3xl mx-auto space-y-4">
-      <span class="inline-block text-xs font-semibold uppercase tracking-widest text-amber-300 bg-amber-950/60 px-3 py-1 rounded-full border border-amber-500/30">
-        Perak Heritage Architecture & Artificial Intelligence
-      </span>
-      <h1 class="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-amber-100">
-        Digital Corpus of Ornamental Motif Terminology in Heritage Buildings in Perak
-      </h1>
-      <p class="text-sm sm:text-base text-stone-300 max-w-2xl mx-auto leading-relaxed">
-        Visual recognition of traditional Malay wood carving patterns and terminology retrieval powered by AI.
-      </p>
-      <div class="pt-4 flex flex-wrap justify-center gap-3">
-        <a href="#scanner" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white font-medium rounded-xl shadow transition">
-          Scan Motif
-        </a>
-        <a href="#catalog" class="px-6 py-3 bg-white/10 hover:bg-white/20 text-amber-100 font-medium rounded-xl border border-white/20 transition">
-          Motif Archive
-        </a>
-      </div>
+<!-- Hero Section with Background Image -->
+<header class="relative py-28 px-4 text-center overflow-hidden">
+  <!-- Background Image (Automatically handles .jpg or .jpeg) -->
+  <img
+    src="hero-bg.jpg"
+    onerror="if(!this.tried){this.tried=true; this.src='hero-bg.jpeg';} else if(!this.triedOrig){this.triedOrig=true; this.src='a2025509.jpeg';}"
+    alt="Istana Kenangan"
+    class="absolute inset-0 w-full h-full object-cover object-center"
+  />
+
+  <!-- Dark Overlay (Keeps text sharp & readable over the photo) -->
+  <div class="absolute inset-0 bg-stone-950/75 backdrop-brightness-75"></div>
+
+  <!-- Foreground Content -->
+  <div class="relative z-10 max-w-3xl mx-auto space-y-4">
+    <span class="inline-block text-xs font-semibold uppercase tracking-widest text-amber-300 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-500/40">
+      Perak Heritage Architecture & Artificial Intelligence
+    </span>
+    <h1 class="text-3xl sm:text-5xl font-serif font-bold tracking-tight text-amber-100 drop-shadow-md">
+      Digital Corpus of Ornamental Motif Terminology in Heritage Buildings in Perak
+    </h1>
+    <p class="text-sm sm:text-base text-stone-200 max-w-2xl mx-auto leading-relaxed drop-shadow-sm">
+      Visual recognition of traditional Malay wood carving patterns and terminology retrieval powered by AI.
+    </p>
+    <div class="pt-4 flex flex-wrap justify-center gap-3">
+      <a href="#scanner" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white font-medium rounded-xl shadow-lg transition">
+        Scan Motif
+      </a>
+      <a href="#catalog" class="px-6 py-3 bg-stone-900/60 hover:bg-stone-900/80 text-amber-100 font-medium rounded-xl border border-amber-400/30 backdrop-blur-sm transition">
+        Motif Archive
+      </a>
     </div>
-  </header>
+  </div>
+</header>
 
   <!-- Section: AI Motif Scanner -->
   <section id="scanner" class="max-w-4xl mx-auto px-4 py-16">
